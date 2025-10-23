@@ -98,6 +98,7 @@ allClassifierDiff <- allClassifierEM %>%
         diff_high = EM95_high_transmitRaw - EM95_high_transmit
     )
 
+##### Average difference in transmission time between transmitRaw and transmit ####
 ggplot(allClassifierDiff, aes(x = inFile, y = diff_mu)) +
     geom_hline(yintercept = 0, linetype = "dashed", color = "gray50") +
     geom_point(size = 3, color = "steelblue") +
@@ -135,22 +136,19 @@ ggplot(allClassifierTimeDecomp, aes(x = inFile, y = mu, fill = func)) +
 
 
 
-
-
-#### Hypothesis testing (permutation t-test) ####
+#### Hypothesis testing (Fisher-Pitman) ####
 ##### Is transmit time generally smaller than transmit raw time among all classifiers ####
 transmitTime <- c(
     as.vector(allClassifier %>% filter(func=="transmit") %>% select(time))$time,
     as.vector(allClassifier %>% filter(func=="transmitRaw") %>% select(time))$time
 )
-group = as.factor(c(rep("transmit", length(transmitTime)%/%2), rep("transmitRaw", length(transmitTime)%/%2)))
-coin::independence_test(transmitTime~group, alternative = "less", distribution = "approximate")
-#'  	Approximative General Independence Test
+group <- as.factor(c(rep("transmit", length(transmitTime)%/%2), rep("transmitRaw", length(transmitTime)%/%2)))
+coin::oneway_test(transmitTime~group, alternative="less")
+#'	    Asymptotic Two-Sample Fisher-Pitman Permutation Test
 #'
-#' data:  transmitTime by group (transmit, transmitRaw)
-#' Z = -4.6919, p-value < 1e-04
-#' alternative hypothesis: less
-
+#'  data:  transmitTime by group (transmit, transmitRaw)
+#'  Z = -4.6919, p-value = 1.353e-06
+#'  alternative hypothesis: true mu is less than 0
 
 
 
@@ -160,15 +158,14 @@ transmitTime <- c(
     as.vector(allClassifier %>% filter(func=="transmit", inFile %in% c("smallInt_superLarge", "largeInt_superLarge", "bolzmann_superLarge")) %>% select(time))$time,
     as.vector(allClassifier %>% filter(func=="transmitRaw", inFile %in% c("smallInt_superLarge", "largeInt_superLarge", "bolzmann_superLarge")) %>% select(time))$time
 )
-group = as.factor(c(rep("transmit", length(transmitTime)%/%2), rep("transmitRaw", length(transmitTime)%/%2)))
+group <- as.factor(c(rep("transmit", length(transmitTime)%/%2), rep("transmitRaw", length(transmitTime)%/%2)))
 
-coin::independence_test(transmitTime~group, alternative = "less", distribution = "approximate")
-#' 	    Approximative General Independence Test
-#'
-#' data:  transmitTime by group (transmit, transmitRaw)
-#' Z = -4.9154, p-value = 1e-04
-#' alternative hypothesis: less
-#' Simple answer: yes
+coin::oneway_test(transmitTime~group, alternative="less")
+#'	    Asymptotic Two-Sample Fisher-Pitman Permutation Test
+#'	    
+#'	data:  transmitTime by group (transmit, transmitRaw)
+#'	Z = -4.9154, p-value = 4.43e-07
+#'	alternative hypothesis: true mu is less than 0
 
 
 
@@ -180,15 +177,14 @@ transmitTime <- c(
     as.vector(allClassifier %>% filter(func=="transmit", inFile %in% c("smallInt_large", "largeInt_large", "bolzmann_large")) %>% select(time))$time,
     as.vector(allClassifier %>% filter(func=="transmitRaw", inFile %in% c("smallInt_large", "largeInt_large", "bolzmann_large")) %>% select(time))$time
 )
-group = as.factor(c(rep("transmit", length(transmitTime)%/%2), rep("transmitRaw", length(transmitTime)%/%2)))
+group <- as.factor(c(rep("transmit", length(transmitTime)%/%2), rep("transmitRaw", length(transmitTime)%/%2)))
 
-coin::independence_test(transmitTime~group, alternative = "less", distribution = "approximate")
-#'  	Approximative General Independence Test
-#'
-#' data:  transmitTime by group (transmit, transmitRaw)
-#' Z = -2.6786, p-value = 0.0037
-#' alternative hypothesis: less
-#' Simple answer: yes
+coin::oneway_test(transmitTime~group, alternative="less")
+#'	    Asymptotic Two-Sample Fisher-Pitman Permutation Test
+#'	    
+#'  data:  transmitTime by group (transmit, transmitRaw)
+#'	Z = -2.6786, p-value = 0.003697
+#'  alternative hypothesis: true mu is less than 0
 
 
 
@@ -200,15 +196,13 @@ transmitTime <- c(
     as.vector(allClassifier %>% filter(func=="transmit", inFile %in% c("smallInt_medium", "largeInt_medium", "bolzmann_medium")) %>% select(time))$time,
     as.vector(allClassifier %>% filter(func=="transmitRaw", inFile %in% c("smallInt_medium", "largeInt_medium", "bolzmann_medium")) %>% select(time))$time
 )
-group = as.factor(c(rep("transmit", length(transmitTime)%/%2), rep("transmitRaw", length(transmitTime)%/%2)))
-
-coin::independence_test(transmitTime~group, alternative = "less", distribution = "approximate")
-#'  	Approximative General Independence Test
-#'
-#' data:  transmitTime by group (transmit, transmitRaw)
-#' Z = -0.12648, p-value = 0.4594
-#' alternative hypothesis: less
-#' Simple answer: no warranties
+group <- as.factor(c(rep("transmit", length(transmitTime)%/%2), rep("transmitRaw", length(transmitTime)%/%2)))
+coin::oneway_test(transmitTime~group, alternative="less")
+#'  	Asymptotic Two-Sample Fisher-Pitman Permutation Test
+#' 
+#'  data:  transmitTime by group (transmit, transmitRaw)
+#'  Z = -0.12648, p-value = 0.4497
+#'  alternative hypothesis: true mu is less than 0
 
 
 
@@ -220,13 +214,31 @@ transmitTime <- c(
     as.vector(allClassifier %>% filter(func=="transmit", inFile %in% c("smallInt_small", "largeInt_small", "bolzmann_small")) %>% select(time))$time,
     as.vector(allClassifier %>% filter(func=="transmitRaw", inFile %in% c("smallInt_small", "largeInt_small", "bolzmann_small")) %>% select(time))$time
 )
-group = as.factor(c(rep("transmit", length(transmitTime)%/%2), rep("transmitRaw", length(transmitTime)%/%2)))
+group <- as.factor(c(rep("transmit", length(transmitTime)%/%2), rep("transmitRaw", length(transmitTime)%/%2)))
+coin::oneway_test(transmitTime~group, alternative="less")
+#'	    Asymptotic Two-Sample Fisher-Pitman Permutation Test
+#'	    
+#'  data:  transmitTime by group (transmit, transmitRaw)
+#'  Z = -0.60948, p-value = 0.2711
+#'  alternative hypothesis: true mu is less than 0
 
-coin::independence_test(transmitTime~group, alternative = "less", distribution = "approximate")
-#'  	Approximative General Independence Test
-#'
-#' data:  transmitTime by group (transmit, transmitRaw)
-#' Z = -0.60948, p-value = 0.2592
-#' alternative hypothesis: less
-#' Simple answer: no warranties
 
+
+
+
+#### Compute Ideal delay ####
+allClassifierFile <- allClassifier    
+allClassifierFile$inFile <-  case_match(
+    allClassifier$inFile,
+    c("smallInt_small", "largeInt_small", "superLargeInt_small", "boltzmann_small") ~ 10^3,
+    c("smallInt_medium", "largeInt_medium", "superLargeInt_medium", "boltzmann_medium") ~ 10^5,
+    c("smallInt_large", "largeInt_large", "superLargeInt_large", "boltzmann_large") ~ 10^6,
+    c("smallInt_superLarge", "largeInt_superLarge", "boltzmann_superLarge") ~ 4*10^6,
+)
+lmTransmitRaw <- lm(time~inFile, data = allClassifierFile %>% filter(func=="transmitRaw"))
+tr_coeff <- lmTransmitRaw$coefficients
+lmTransmit <- lm(time~inFile, data = allClassifierFile %>% filter(func=="transmit"))
+t_coeff <- lmTransmit$coefficients
+
+t <- ceiling((tr_coeff[1]-t_coeff[1])/(t_coeff[2]-tr_coeff[2]))
+t

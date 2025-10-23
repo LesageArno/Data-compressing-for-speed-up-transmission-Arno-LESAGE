@@ -68,6 +68,7 @@ decompressedArr = bP.getArr()
 C:.
 │   arrayGenerator.py
 │   benchmark.py
+|   benchmarkAnalysis.r
 │   main.py
 │   README.md
 │   tests.py
