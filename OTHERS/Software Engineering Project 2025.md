@@ -71,7 +71,7 @@ I reserve the right to ask for an oral presentation to obtain further informatio
 - Second representation: done (+tested)
 - Third representation: done (+tested)
 - Negative: Handeled
-- GitHub: todo
-- Report: todo
+- GitHub: done
+- Report: done
 - Factory: done
 - Benchmark: done
